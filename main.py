@@ -181,18 +181,25 @@ def get_running_processes():
 
   print(f"\nTotal Processes: {all_process_count}")
 
-system_info()
-time.sleep(0.4)
-disk_info()
-time.sleep(0.4)
-cpu_info()
-time.sleep(0.4)
-mem_info()
-time.sleep(0.4)
-loadavg_info()
-time.sleep(0.4)
-network_info()
-time.sleep(0.4)
-get_External_ip()
-get_running_processes()
+if __name__ == '__main__':
+    system_info()
+    time.sleep(0.4)
+
+    disk_info()
+    time.sleep(0.4)
+
+    cpu_info()
+    time.sleep(0.4)
+
+    mem_info()
+    time.sleep(0.4)
+
+    loadavg_info()
+    time.sleep(0.4)
+
+    network_info()
+    time.sleep(0.4)
+
+    get_External_ip()
+    get_running_processes()
 
