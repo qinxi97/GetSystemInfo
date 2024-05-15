@@ -11,10 +11,36 @@ import os
 import platform
 import re
 import subprocess
-import time
 import requests
-import psutil
 import datetime
+import time
+import psutil
+
+def get_system_uptime():
+    # 获取系统启动时间
+    boot_time = psutil.boot_time()
+
+    # 计算当前时间与系统启动时间的差值
+    uptime_seconds = int(time.time() - boot_time)
+
+    # 将秒数转换为更友好的格式
+    uptime = str(datetime.timedelta(seconds=uptime_seconds))
+
+    print(f"System uptime: \033[32m {uptime} \033[0m")
+
+
+def get_users_with_shell():
+    shell_path = "/bin/bash"
+    try:
+        # 使用subprocess执行命令
+        result = subprocess.run(['/bin/egrep', shell_path, '/etc/passwd'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=True)
+
+        # 使用列表推导式获取用户名列表
+        users = [line.split(':')[0] for line in result.stdout.splitlines()]
+        return users
+    except subprocess.CalledProcessError as e:
+        print(f"Error executing command: {e}")
+        return []
 
 def system_info():
     print("==================== SYSTEM INFO ========================")
@@ -35,6 +61,14 @@ def system_info():
     print(f"System_version is \033[32m {os_name} \033[0m")
     print(f"System_kernel_version is  \033[32m {version} \033[0m")
     print(f"System_hostname is \033[32m {hostname} \033[0m")
+    # 获取系统运行时间
+    get_system_uptime()
+
+    # 获取系统中可登录用户
+    users = get_users_with_shell()
+    print(f"System User as follows: ")
+    for name in users:
+        print(f"\033[32m {name} \033[0m")
     print('\n')
 
 def disk_info():
@@ -147,19 +181,18 @@ def get_running_processes():
 
   print(f"\nTotal Processes: {all_process_count}")
 
-
 system_info()
-time.sleep(0.3)
+time.sleep(0.4)
 disk_info()
-time.sleep(0.3)
+time.sleep(0.4)
 cpu_info()
 time.sleep(0.4)
 mem_info()
-time.sleep(0.1)
+time.sleep(0.4)
 loadavg_info()
-time.sleep(0.2)
+time.sleep(0.4)
 network_info()
-time.sleep(0.3)
+time.sleep(0.4)
 get_External_ip()
 get_running_processes()
 
