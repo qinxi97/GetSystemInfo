@@ -244,7 +244,7 @@ def get_routing_table():
     r = services.stdout.strip()
     print("Startup services:", r)
 
-# 查询系统所有的参数信息
+# 查询系统所有的内核参数信息
 def get_kernel_parameter():
     print("==================== ALL KERNEL PARAMETER =======================")
     services = subprocess.run(['sysctl', '-a'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=True)
