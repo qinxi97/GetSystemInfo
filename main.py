@@ -244,12 +244,18 @@ def get_routing_table():
     r = services.stdout.strip()
     print("Startup services:", r)
 
-# 查询路由信息
+# 查询系统所有的参数信息
 def get_kernel_parameter():
-    print("==================== KERNEL PARAMETER =======================")
+    print("==================== ALL KERNEL PARAMETER =======================")
     services = subprocess.run(['sysctl', '-a'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=True)
     r = services.stdout.strip()
     print("Startup services:", r)
+    print('\n')
+    print("==================== Effective parameters =======================")
+    services = subprocess.run(['egrep', '-v', '^#', '/etc/sysctl.conf'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True,
+                              check=True)
+    s = services.stdout.strip()
+    print("Startup services:", s)
 
 
 def usage():
