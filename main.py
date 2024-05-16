@@ -180,6 +180,15 @@ def get_running_processes():
       pass
 
   print(f"\nTotal Processes: {all_process_count}")
+  print('\n')
+
+def get_crontab():
+    print("==================== RUNNING CRONTAB =======================")
+    # 使用subprocess执行命令
+    result = subprocess.run(['crontab', '-l'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=True)
+    r = result.stdout.strip()
+    # 返回crontab的内容
+    print("Crontab content:", r)
 
 if __name__ == '__main__':
     system_info()
@@ -202,4 +211,12 @@ if __name__ == '__main__':
 
     get_External_ip()
     get_running_processes()
+
+    get_crontab()
+
+
+
+
+
+
 
