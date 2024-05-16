@@ -48,7 +48,7 @@ def get_system_uptime():
 
     print(f"System uptime: \033[32m {uptime} \033[0m")
 
-
+# 获取服务器可登录用户名
 def get_users_with_shell():
     shell_path = "/bin/bash"
     try:
@@ -62,6 +62,7 @@ def get_users_with_shell():
         print(f"Error executing command: {e}")
         return []
 
+# 获取服务器系统信息（运行时间，系统版本）
 def system_info():
     print("==================== SYSTEM INFO ========================")
     version = platform.release()
@@ -102,7 +103,7 @@ def disk_info():
         print(" ".join(f"{item:<{max_length}}" for item, max_length in zip(row, max_lengths)))
     print('\n')
 
-
+# 获取服务器CPU信息
 def cpu_info():
     print("======================= CPU INFO ========================")
 
@@ -144,6 +145,7 @@ def mem_info():
     print(f"Used  memory is \033[32m {UsedMem} MB \033[0m")
     print('\n')
 
+# 获取服务器负载信息
 def loadavg_info():
     print("================== LOAD AVERAGE INFO  ====================")
     with open('/proc/loadavg', 'r') as f:
@@ -158,6 +160,7 @@ def loadavg_info():
     print(f"Loadavg in 10 min is \033[32m {Load10} \033[0m")
     print('\n')
 
+# 获取服务器内网IP
 def network_info():
     print("==================== NETWORK INFO =======================")
     ip_output = subprocess.check_output(["ip", "addr"]).decode().strip().split("\n")
@@ -168,6 +171,7 @@ def network_info():
 
     print(f"Network_device is \033[32m {network_card} \033[0m , Internal IP is  \033[32m {IP} \033[0m")
 
+# 获取服务器外网IP
 def get_External_ip():
     url = "https://api.ipify.org"
     response = requests.get(url)
@@ -240,16 +244,24 @@ def get_routing_table():
     r = services.stdout.strip()
     print("Startup services:", r)
 
+# 查询路由信息
+def get_kernel_parameter():
+    print("==================== KERNEL PARAMETER =======================")
+    services = subprocess.run(['sysctl', '-a'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=True)
+    r = services.stdout.strip()
+    print("Startup services:", r)
+
 
 def usage():
-    print("Usage: python3 main.py [-b] [-h] [-c] [-p] [-s] [-l] [-r] [-t]")
+    print("Usage: python3 main.py [-b] [-h] [-c] [-p] [-s] [-l] [-r] [-t] [-k]")
     print("Base Info: -b")
     print("Crontab Info: -c")
     print("Process Info: -p")
+    print("TCP Info: -t")
     print("Startup Service Info: -s")
     print("Listening Socket Info: -l")
-    print("TCP Info: -t")
     print("Routing Table Info: -r")
+    print("Kernel Parameter Info: -k")
     print("Help: -h")
 
 if __name__ == '__main__':
@@ -296,6 +308,9 @@ if __name__ == '__main__':
         elif value.lower() == '-r':
             get_routing_table()
 
+        elif value.lower() == '-k':
+            get_kernel_parameter()
+
         elif value.lower() == '-s':
             time.sleep(0.4)
             get_startup_service()
@@ -304,16 +319,4 @@ if __name__ == '__main__':
             usage()
 
     select_info(value)
-
-
-
-
-
-
-
-
-
-
-
-
 
