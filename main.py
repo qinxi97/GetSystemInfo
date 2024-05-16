@@ -11,6 +11,7 @@ import os
 import platform
 import re
 import subprocess
+import sys
 import requests
 import datetime
 import time
@@ -173,6 +174,7 @@ def get_External_ip():
     print(f"External IP is  \033[32m {response.text} \033[0m")
     print('\n')
 
+# 查询正在运行进程
 def get_running_processes():
   all_process_count = 0
 
@@ -201,6 +203,7 @@ def get_running_processes():
   print(f"\nTotal Processes: {all_process_count}")
   print('\n')
 
+# 查询定时任务
 def get_crontab():
     print("==================== RUNNING CRONTAB =======================")
     # 使用subprocess执行命令
@@ -209,30 +212,104 @@ def get_crontab():
     # 返回crontab的内容
     print("Crontab content:", r)
 
+# 查询开机启动服务
+def get_startup_service():
+    print("==================== STARTUP SERVICE =======================")
+    services = subprocess.run(['systemctl', 'list-unit-files', '--type=service', '--state=enabled'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=True)
+    r = services.stdout.strip()
+    print("Startup services:", r)
+
+# 查询所有监听服务
+def get_listening_socket():
+    print("==================== LISTENING SOCKET =======================")
+    services = subprocess.run(['netstat', '-lnupt'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=True)
+    r = services.stdout.strip()
+    print("Startup services:", r)
+
+# 查询所有TCP网络链接
+def get_tcp_info():
+    print("==================== TCP INFO =======================")
+    services = subprocess.run(['netstat', '-ant'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=True)
+    r = services.stdout.strip()
+    print("Startup services:", r)
+
+# 查询路由信息
+def get_routing_table():
+    print("==================== ROUTING TABLE =======================")
+    services = subprocess.run(['netstat', '-nr'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=True)
+    r = services.stdout.strip()
+    print("Startup services:", r)
+
+
+def usage():
+    print("Usage: python3 main.py [-b] [-h] [-c] [-p] [-s] [-l] [-r] [-t]")
+    print("Base Info: -b")
+    print("Crontab Info: -c")
+    print("Process Info: -p")
+    print("Startup Service Info: -s")
+    print("Listening Socket Info: -l")
+    print("TCP Info: -t")
+    print("Routing Table Info: -r")
+    print("Help: -h")
+
 if __name__ == '__main__':
     print_banner()
-    system_info()
-    time.sleep(0.4)
+    if len(sys.argv) != 2:
+        print(f"\033[36m Please pass in an argument. \033[0m")
+        usage()
+        sys.exit(1)
 
-    disk_info()
-    time.sleep(0.4)
+    value = sys.argv[1]
+    def select_info(value):
+        if value.lower() == '-b':
+            system_info()
+            time.sleep(0.4)
 
-    cpu_info()
-    time.sleep(0.4)
+            disk_info()
+            time.sleep(0.4)
 
-    mem_info()
-    time.sleep(0.4)
+            cpu_info()
+            time.sleep(0.4)
 
-    loadavg_info()
-    time.sleep(0.4)
+            mem_info()
+            time.sleep(0.4)
 
-    network_info()
-    time.sleep(0.4)
+            loadavg_info()
+            time.sleep(0.4)
 
-    get_External_ip()
-    get_running_processes()
+            network_info()
+            get_External_ip()
 
-    get_crontab()
+        elif value.lower() == '-p':
+            time.sleep(0.4)
+            get_running_processes()
+
+        elif value.lower() == '-c':
+            get_crontab()
+
+        elif value.lower() == '-l':
+            get_listening_socket()
+
+        elif value.lower() == '-t':
+            get_tcp_info()
+
+        elif value.lower() == '-r':
+            get_routing_table()
+
+        elif value.lower() == '-s':
+            time.sleep(0.4)
+            get_startup_service()
+
+        else:
+            usage()
+
+    select_info(value)
+
+
+
+
+
+
 
 
 
