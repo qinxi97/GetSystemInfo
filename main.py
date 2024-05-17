@@ -173,9 +173,21 @@ def network_info():
 
 # 获取服务器外网IP
 def get_External_ip():
-    url = "https://api.ipify.org"
-    response = requests.get(url)
-    print(f"External IP is  \033[32m {response.text} \033[0m")
+    primary_url = "https://api.ipify.org"
+    backup_url = "https://ipinfo.io/ip"
+
+    try:
+        response = requests.get(primary_url, timeout=8)
+        response.raise_for_status()  # Check if the request was successful
+        print(f"External IP is  \033[32m {response.text} \033[0m")
+    except requests.RequestException as e:
+        try:
+            response = requests.get(backup_url, timeout=5)
+            response.raise_for_status()  # Check if the request was successful
+            #print(response.status_code)
+            print(f"External IP is  \033[32m {response.text} \033[0m")
+        except requests.RequestException as e:
+            print(f"Failed to reach {backup_url} as well. Error: {e}")
     print('\n')
 
 # 查询正在运行进程
